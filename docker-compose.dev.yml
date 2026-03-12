@@ -1,0 +1,14 @@
+# 로컬 코드 변경 시 컨테이너에 반영 (watch 모드). 사용: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: sh -c "yarn install && yarn start:dev"
+    env_file: .env
+    environment:
+      NODE_ENV: development
+      redis_host: host.docker.internal
