@@ -1,0 +1,14 @@
+# 앱만 실행. Redis·MySQL은 호스트에서 띄워 두고, 호스트 서비스에 연결.
+#
+# Docker Desktop (Mac/Windows): host.docker.internal 로 호스트의 127.0.0.1 접근.
+# Linux에서 진짜 host 네트워크 쓰려면: network_mode: host 로 바꾸고
+#   redis_host=127.0.0.1, db_host=127.0.0.1 로 실행.
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      redis_host: host.docker.internal
