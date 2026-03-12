@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { RedisModule } from './redis/redis.module';
+import { RedisModule } from './adapters/redis/redis.module';
 import { Order } from './users/entities/order.entity';
 import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';

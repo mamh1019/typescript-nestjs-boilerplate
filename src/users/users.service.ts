@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RedisService } from '../redis/redis.service';
+import { RedisService } from '../adapters/redis/redis.service';
+import { KafkaService } from '../adapters/kafka/kafka.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -15,6 +16,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly redis: RedisService,
+    private readonly kafka: KafkaService,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -59,7 +61,10 @@ export class UsersService {
       coin: dto.coin ?? 0,
       jewel: dto.jewel ?? 0,
     });
-    return this.userRepository.save(user);
+    const saved = await this.userRepository.save(user);
+    // Fire-and-forget Kafka 이벤트 (에러가 나도 유저 생성은 성공)
+    void this.kafka.emitUserCreated(saved);
+    return saved;
   }
 
   async update(userId: number, dto: UpdateUserDto): Promise<User | null> {

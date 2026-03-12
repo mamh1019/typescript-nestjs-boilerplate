@@ -12,3 +12,4 @@ services:
     environment:
       NODE_ENV: development
       redis_host: host.docker.internal
+      kafka_broker: host.docker.internal:9092
